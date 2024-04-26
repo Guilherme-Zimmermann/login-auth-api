@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.loginauthapi.entities.User;
 import com.example.loginauthapi.infra.security.TokenService;
 import com.example.loginauthapi.repository.UserRepository;
+import com.example.loginauthapi.service.exceptions.ResourceNotFoundException;
 
 @Service
 public class AuthService {
@@ -23,7 +24,7 @@ public class AuthService {
     private TokenService tokenService;
 
     public String login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException());
         if (passwordEncoder.matches(password, user.getPassword())) {
             String token = this.tokenService.generateToken(user);
             return token;
@@ -33,14 +34,14 @@ public class AuthService {
 
     public String register(String name, String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
-
+        
         if(user.isEmpty()) {
             User newUser = new User();
             newUser.setName(name);
             newUser.setEmail(email);
             newUser.setPassword(passwordEncoder.encode(password));
             userRepository.save(newUser);
-
+            
             String token = tokenService.generateToken(newUser);
             return token;
         }

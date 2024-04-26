@@ -9,6 +9,9 @@ import com.example.loginauthapi.dto.LoginRequestDto;
 import com.example.loginauthapi.dto.RegisterRequestDto;
 import com.example.loginauthapi.dto.ResponseDto;
 import com.example.loginauthapi.service.AuthService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,8 +30,8 @@ public class AuthResource {
     }
     
     @PostMapping("register")
-    public ResponseEntity<ResponseDto> register(@RequestBody RegisterRequestDto data) {
-        String token = authService.register(data.name(), data.email(), data.password());
+    public ResponseEntity<ResponseDto> register(@RequestBody @Valid RegisterRequestDto data) {
+        String token = authService.register(data.getName(), data.getEmail(), data.getPassword());
         return ResponseEntity.ok().body(new ResponseDto(token));
     }
 }
