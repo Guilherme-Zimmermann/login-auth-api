@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.loginauthapi.dto.LoginRequestDto;
+import com.example.loginauthapi.dto.NewPasswordDto;
 import com.example.loginauthapi.dto.RegisterRequestDto;
+import com.example.loginauthapi.dto.ResetPasswordDto;
 import com.example.loginauthapi.dto.ResponseDto;
 import com.example.loginauthapi.service.AuthService;
 
@@ -32,6 +34,18 @@ public class AuthResource {
     @PostMapping("register")
     public ResponseEntity<ResponseDto> register(@RequestBody @Valid RegisterRequestDto data) {
         String token = authService.register(data.getName(), data.getEmail(), data.getPassword());
+        return ResponseEntity.ok().body(new ResponseDto(token));
+    }
+
+    @PostMapping("reset-password")
+    public ResponseEntity<ResponseDto> resetPassword(@RequestBody ResetPasswordDto data) {
+        String token = authService.resetPassowrd(data.email());
+        return ResponseEntity.ok().body(new ResponseDto(token));
+    }
+
+    @PostMapping("new-password")
+    public ResponseEntity<ResponseDto> newPassword(@RequestBody NewPasswordDto data) {
+        String token = authService.newPassword(data.token(), data.newPassword());
         return ResponseEntity.ok().body(new ResponseDto(token));
     }
 }

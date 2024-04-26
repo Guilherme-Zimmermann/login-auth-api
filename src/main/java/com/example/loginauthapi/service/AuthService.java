@@ -26,7 +26,7 @@ public class AuthService {
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException());
         if (passwordEncoder.matches(password, user.getPassword())) {
-            String token = this.tokenService.generateToken(user);
+            String token = tokenService.generateToken(user);
             return token;
         }
         throw new RuntimeException();
@@ -46,5 +46,22 @@ public class AuthService {
             return token;
         }
         throw new RuntimeException();
+    }
+
+    public String resetPassowrd(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException());
+        String token = tokenService.generateToken(user);
+        return token;
+    }
+
+    public String newPassword(String token, String newPassword) {
+        String email = tokenService.validateToken(token);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException());
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        String newToken = tokenService.generateToken(user);
+        return newToken;
     }
 }
