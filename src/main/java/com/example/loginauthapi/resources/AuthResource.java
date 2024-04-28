@@ -14,12 +14,14 @@ import com.example.loginauthapi.service.AuthService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Controller
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = "*")
 public class AuthResource {
     
     @Autowired
